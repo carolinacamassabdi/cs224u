@@ -97,6 +97,8 @@ class TorchRNNModel(nn.Module):
             use_embedding=True,
             rnn_cell_class=nn.LSTM,
             hidden_dim=50,
+            num_layers=1,
+            dropout=0.0,
             bidirectional=False,
             freeze_embedding=False):
         """
@@ -121,6 +123,8 @@ class TorchRNNModel(nn.Module):
             self.embed_dim = self.embedding.embedding_dim
         self.rnn = rnn_cell_class(
             input_size=self.embed_dim,
+            num_layers=num_layers,
+            dropout=dropout,
             hidden_size=hidden_dim,
             batch_first=True,
             bidirectional=bidirectional)
@@ -206,6 +210,7 @@ class TorchRNNClassifier(TorchModelBase):
             rnn_cell_class=nn.LSTM,
             bidirectional=False,
             freeze_embedding=False,
+            num_layers=1,
             classifier_activation=nn.ReLU(),
             **base_kwargs):
         """
@@ -271,6 +276,7 @@ class TorchRNNClassifier(TorchModelBase):
         self.hidden_dim = hidden_dim
         self.embedding = embedding
         self.use_embedding = use_embedding
+        self.num_layers=num_layers
         self.embed_dim = embed_dim
         self.rnn_cell_class = rnn_cell_class
         self.bidirectional = bidirectional
@@ -285,7 +291,8 @@ class TorchRNNClassifier(TorchModelBase):
             'rnn_cell_class',
             'bidirectional',
             'freeze_embedding',
-            'classifier_activation']
+            'classifier_activation',
+            'num_layers']
         self.loss = nn.CrossEntropyLoss(reduction="mean")
 
     def build_graph(self):
@@ -302,6 +309,7 @@ class TorchRNNClassifier(TorchModelBase):
             vocab_size=len(self.vocab),
             embedding=self.embedding,
             use_embedding=self.use_embedding,
+            num_layers=self.num_layers,
             embed_dim=self.embed_dim,
             rnn_cell_class=self.rnn_cell_class,
             hidden_dim=self.hidden_dim,
