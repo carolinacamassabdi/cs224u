@@ -209,7 +209,7 @@ def fit_classifier_with_hyperparameter_search(
     if isinstance(cv, int):
         cv = StratifiedShuffleSplit(n_splits=cv, test_size=0.20)
     # Find the best model within param_grid:
-    crossvalidator = GridSearchCV(basemod, param_grid, cv=cv, scoring=scoring)
+    crossvalidator = GridSearchCV(basemod, param_grid, cv=cv, scoring=scoring, verbose=1)
     crossvalidator.fit(X, y)
     # Report some information:
     if verbose:
